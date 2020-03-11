@@ -5,7 +5,7 @@
 \alias{unsink_s3}
 \title{Capture arguments to S3 generics}
 \usage{
-sink_s3(name, pkgname = NULL)
+sink_s3(name, pkgname = NULL, pass = TRUE)
 
 unsink_s3(name)
 }
@@ -14,6 +14,9 @@ unsink_s3(name)
 
 \item{pkgname}{character string. Name of a package which registers the
 generic used in \code{name}. (optional)}
+
+\item{pass}{logical.  Should the captured arguments be passed on to the masked
+generic?  (default: \code{TRUE})}
 }
 \value{
 \code{sink_s3} returns invisibly \code{NULL}
@@ -27,10 +30,11 @@ Capture arguments to S3 generics
 ...
 }
 \examples{
+\dontrun{
 sink_s3("print.ggplot", "ggplot2")
 library(ggplot2)
 ggplot(mtcars) + geom_point(aes(mpg, disp))
 out <- unsink_s3("print.ggplot")
-
 str(out)
+}
 }

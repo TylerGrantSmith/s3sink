@@ -6,7 +6,7 @@ get_s3_override <- function(name) {
   .__sink_override__[[name]]
 }
 
-override_s3_method <- function(name, method) {
+override_s3_method <- function(name, method, pass) {
   table <- .BaseNamespaceEnv[[".__S3MethodsTable__."]]
 
   if (exists(name, table)) {
@@ -14,6 +14,16 @@ override_s3_method <- function(name, method) {
   }
 
   attr(method, ".__sink_override__") <- TRUE
+  attr(method, ".__sink_pass__") <- pass
+
+  if (pass & exists(name, .__sink_original__)) {
+    body(method) <-
+      as.call(
+        append(
+          as.list(body(method)),
+          quote(.__sink_original__[[.__sink_name__]](...))))
+  }
+
   assign(name, method, table)
   assign(name, method, .__sink_override__)
   invisible(NULL)
@@ -44,8 +54,9 @@ resume_s3_override <- function(name) {
   method <- get_s3_override(name)
 
   if (!is.null(method)) {
-    override_s3_method(name, method)
+    override_s3_method(name, method, attr(method, ".__sink_pass__"))
   }
+
   invisible(NULL)
 }
 
@@ -59,6 +70,8 @@ ns_sink_hook <- function(name, pkgname) {
 #' @param name character string. Name of an S3 generic
 #' @param pkgname character string. Name of a package which registers the
 #'   generic used in `name`. (optional)
+#' @param pass logical.  Should the captured arguments be passed on to the masked
+#'   generic?  (default: `TRUE`)
 #'
 #' @details ...
 #' @return
@@ -69,13 +82,14 @@ ns_sink_hook <- function(name, pkgname) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' sink_s3("print.ggplot", "ggplot2")
 #' library(ggplot2)
 #' ggplot(mtcars) + geom_point(aes(mpg, disp))
 #' out <- unsink_s3("print.ggplot")
-#'
 #' str(out)
-sink_s3 <- function(name, pkgname = NULL) {
+#' }
+sink_s3 <- function(name, pkgname = NULL, pass = TRUE) {
   if (!is.null(name) & !is.character(name))
     stop("'name' must be a length one character vector.")
 
@@ -83,15 +97,17 @@ sink_s3 <- function(name, pkgname = NULL) {
     stop("'pkgname' must be a length one character vector.")
 
 
-  e <- new.env(parent = baseenv())
+  e <- new.env()
   e[[".__sink_output__"]] <- list()
-
+  e[[".__sink_name__"]] <- name
   stub <- function(...) {
-    .__sink_output__ <<- base::append(.__sink_output__, list(...))
+    parenv <- parent.env(environment())
+    sink_output <- get0(".__sink_output__", parenv)
+    assign(".__sink_output__", base::append(sink_output, list(...)), envir = parenv)
   }
 
   environment(stub) <- e
-  override_s3_method(name, stub)
+  override_s3_method(name, stub, pass)
 
   if (!is.null(pkgname))
     ns_sink_hook(name, pkgname)
@@ -105,11 +121,4 @@ unsink_s3 <- function(name) {
   remove_s3_override(name)
 
   return(invisible(sink_env[[".__sink_output__"]]))
-}
-
-#' @export
-capture_s3 <- function(expr, name, pkgname) {
-  sink_s3(name, pkgname)
-  eval(substitute(expr))
-  unsink_s3(name)
 }
