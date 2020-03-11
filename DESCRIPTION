@@ -17,4 +17,5 @@ URL: https://github.com/TylerGrantSmith/s3sink
 BugReports: https://github.com/TylerGrantSmith/s3sink/issues
 Suggests: 
     testthat (>= 2.1.0),
-    covr
+    covr,
+    xml2
