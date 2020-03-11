@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R build status](https://github.com/TylerGrantSmith/s3sink/workflows/R-CMD-check/badge.svg)](https://github.com/TylerGrantSmith/s3sink)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Codecov test coverage](https://codecov.io/gh/TylerGrantSmith/s3sink/branch/master/graph/badge.svg)](https://codecov.io/gh/TylerGrantSmith/s3sink?branch=master)
 <!-- badges: end -->
 
 
@@ -32,7 +33,7 @@ devtools::install_github("TylerGrantSmith/s3sink")
 ## Example
 
 
-```{r example}
+```{r example, fig.align='center', out.width='80%'}
 library(s3sink)
 
 plotting_function <- function() {

@@ -9,6 +9,8 @@
 status](https://github.com/TylerGrantSmith/s3sink/workflows/R-CMD-check/badge.svg)](https://github.com/TylerGrantSmith/s3sink)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Codecov test
+coverage](https://codecov.io/gh/TylerGrantSmith/s3sink/branch/master/graph/badge.svg)](https://codecov.io/gh/TylerGrantSmith/s3sink?branch=master)
 <!-- badges: end -->
 
 ## Installation
@@ -39,7 +41,7 @@ plotting_function()
 #>   print.ggplot
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-example-1.png" width="80%" style="display: block; margin: auto;" />
 
 ``` r
 out <- unsink_s3("print.ggplot")
