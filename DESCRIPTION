@@ -1,0 +1,15 @@
+Package: s3sink
+Title: Captures the inputs to S3 functions
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Tyler Grant", 
+           family = "Smith",
+           role = c("aut", "cre"),
+           email = "tyler.grant.smith@gmail.com")
+Description: This package allows a user to intercept calls to S3 methods and
+    capture the arguments.  
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.0.2
