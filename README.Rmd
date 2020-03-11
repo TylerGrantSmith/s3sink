@@ -45,5 +45,5 @@ sink_s3("print.ggplot", "ggplot2")
 plotting_function()
 out <- unsink_s3("print.ggplot")
 
-str(out)
+str(out, 1)
 ```
