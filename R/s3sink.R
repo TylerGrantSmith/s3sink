@@ -6,10 +6,10 @@ get_s3_override <- function(name) {
   .__sink_override__[[name]]
 }
 
-override_s3_method <- function(name, method, pass) {
+override_s3_method <- function(name, method, pass, .resume = FALSE) {
   table <- .BaseNamespaceEnv[[".__S3MethodsTable__."]]
 
-  if (exists(name, .__sink_override__)) {
+  if (exists(name, .__sink_override__) & !.resume) {
     warning(sprintf("%s is already overridden.", name),call. = FALSE)
     return()
   }
@@ -60,7 +60,8 @@ resume_s3_override <- function(name) {
   method <- get_s3_override(name)
 
   if (!is.null(method)) {
-    override_s3_method(name, method, attr(method, ".__sink_pass__"))
+    override_s3_method(name, method, attr(method, ".__sink_pass__"),
+                       .resume = TRUE)
   }
 
   invisible(NULL)
